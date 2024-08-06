@@ -3,182 +3,398 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fun Projects</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <title>Spinner</title>
   <style>
     body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      background: #161616;
-      color: white;
-      font-family: 'Noto Sans', sans-serif;
-      overflow: hidden;
-      flex-direction: column;
+      margin: 0;
     }
-    .glow-text {
-      font-size: 3em;
-      position: relative;
-      animation: fadeIn 2s ease-in-out forwards, moveUp 2s ease-in-out 2s forwards;
-      opacity: 0;
-      color: white;
-      text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.3);
+    .container {
+      text-align: center;
     }
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
+    .spinner-text {
+      font-size: 2em;
+      margin-bottom: 20px;
     }
-    @keyframes moveUp {
-      to {
-        transform: translateY(-50px);
-      }
-    }
-    .button-container {
-      opacity: 0;
-      animation: fadeIn 1s ease-in-out 4s forwards;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .color-button {
-      margin: 10px 0;
-      padding: 10px 40px;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      animation: glowButton 3s ease-in-out infinite;
-      transition: background 0.3s;
-    }
-    .color-button:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    @keyframes glowButton {
-      0% {
-        box-shadow: 0 0 5px #ff2972, 0 0 15px #ff2972;
-      }
-      15% {
-        box-shadow: 0 0 5px #fea600, 0 0 15px #fea600;
-      }
-      30% {
-        box-shadow: 0 0 5px #00c9ff, 0 0 15px #00c9ff;
-      }
-      45% {
-        box-shadow: 0 0 5px #00ff73, 0 0 15px #00ff73;
-      }
-      60% {
-        box-shadow: 0 0 5px #ff6f61, 0 0 15px #ff6f61;
-      }
-      75% {
-        box-shadow: 0 0 5px #ff3d00, 0 0 15px #ff3d00;
-      }
-      90% {
-        box-shadow: 0 0 5px #6a5acd, 0 0 15px #6a5acd;
-      }
-      100% {
-        box-shadow: 0 0 5px #ff1493, 0 0 15px #ff1493;
-      }
-    }
-    .credit-text {
-      margin-top: 20px;
-      font-size: 1.2em;
-    }
-    .message {
-      margin-top: 10px;
-      font-size: 1em;
-    }
-    .password-container, .main-container {
-      display: none;
-    }
-    .visible {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .password-input {
-      padding: 10px;
-      font-size: 1em;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-    }
-    .submit-button {
+    .spin-button, .login-button {
       padding: 10px 20px;
-      font-size: 1em;
+      font-size: 1.2em;
+      background-color: #00c9ff;
+      color: white;
       border: none;
       border-radius: 5px;
-      background: #1e90ff;
-      color: white;
       cursor: pointer;
       transition: background 0.3s;
+    }
+    .spin-button:hover, .login-button:hover {
+      background-color: #0099cc;
+    }
+    .message, .error {
+      margin-top: 20px;
+    }
+    .error {
+      color: red;
+    }
+    .risk-message {
+      color: red;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+    .yes-button {
+      display: none;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #ff3d00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
       margin-top: 10px;
     }
-    .submit-button:hover {
-      background: #006bb3;
+    .yes-button:hover {
+      background-color: #cc2900;
     }
   </style>
 </head>
 <body>
-  <div class="password-container visible">
-    <div>Please enter the password to access the project:</div>
-    <input type="password" class="password-input" id="password">
-    <button class="submit-button" onclick="checkPassword()">Submit</button>
-  </div>
-
-  <div class="main-container">
-    <div class="glow-text">Do less Earn more</div>
-    <div class="button-container">
-      <button class="color-button" onclick="redirectToLink()">Complete Steps and win</button>
-      <div class="credit-text" id="credit-text">Your Credit: Server Issue, can't track credit</div>
+  <div class="container">
+    <div id="login-container">
+      <input type="password" id="password" placeholder="Enter password">
+      <button class="login-button" onclick="login()">Submit</button>
+      <div class="error" id="error"></div>
+    </div>
+    <div id="spinner-container" style="display: none;">
+      <div class="spinner-text" id="spinner-text">Spinning...</div>
+      <button class="spin-button" id="spin-button" onclick="spin()">Spin</button>
       <div class="message" id="message"></div>
+      <div class="risk-message" id="risk-message"></div>
+      <button class="yes-button" id="yes-button" onclick="spinAgain()">Yes</button>
     </div>
   </div>
 
   <script>
     const correctPasswords = [
-      'UMM NANA UMM NANA',
-      'Bankai',
-      'marker_chor',
-      'imablackniger',
-      'yare yare'
+      '$spinprize=66008937310270899828739376118629327#18171037/(1+1)2937',
+      '$spin=_k12993739008483737r28297i10000t211#h191828387i@k',
+      '$localaccess=101001283749741192938-28827272(a+b)+1083'
     ];
 
-    function checkPassword() {
+    const prizes = [
+      { name: '₹20', chance: 0.50 },
+      { name: '₹30', chance: 0.20 },
+      { name: 'A Parker Pen {Rare Value = ₹750}', chance: 0.22 },
+      { name: 'A Phone {Value = ₹10,000}', chance: 0.08 }
+    ];
+
+    let spinsRemaining = 2;
+    let lastPrize = null;
+    const webhookURL = 'YOUR_DISCORD_WEBHOOK_URL'; // Replace with your Discord webhook URL
+
+    function login() {
       const password = document.getElementById('password').value;
       if (correctPasswords.includes(password)) {
-        document.querySelector('.password-container').classList.remove('visible');
-        document.querySelector('.main-container').classList.add('visible');
-        updateCredit();
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('spinner-container').style.display = 'block';
       } else {
-        alert('Incorrect password. Please try again.');
+        document.getElementById('error').textContent = 'Incorrect password. Please try again.';
       }
     }
 
-    function redirectToLink() {
-      window.location.href = "https://link-target.net/1211664/stage-1";
+    function spin() {
+      if (spinsRemaining <= 0) {
+        document.getElementById('message').textContent = 'You have no spins left.';
+        return;
+      }
+
+      if (lastPrize && (lastPrize === '₹20' || lastPrize === '₹30' || lastPrize === 'A Parker Pen {Rare Value = ₹750}')) {
+        document.getElementById('risk-message').textContent = `Would you like to risk your ${lastPrize} and do the last spin again?`;
+        document.getElementById('yes-button').style.display = 'inline-block';
+        return;
+      }
+
+      spinsRemaining--;
+      const result = getPrize();
+      lastPrize = result.name;
+      document.getElementById('spinner-text').textContent = `You won ${result.name}`;
+      document.getElementById('message').textContent = result.message;
+      document.getElementById('risk-message').textContent = '';
+      document.getElementById('yes-button').style.display = 'none';
+
+      // Send notification to Discord
+      notifyDiscord(result.name);
+
+      // Store the result in localStorage
+      localStorage.setItem('prizeValue', result.value);
     }
 
-    function updateCredit() {
-      const prizeValue = localStorage.getItem('prizeValue');
-      const creditText = document.getElementById('credit-text');
-      const messageText = document.getElementById('message');
+    function spinAgain() {
+      if (spinsRemaining <= 0) {
+        document.getElementById('message').textContent = 'You have no spins left.';
+        return;
+      }
 
-      if (prizeValue) {
-        creditText.textContent = `Your Credit: ₹${prizeValue}`;
-        
-        if (prizeValue == 20 || prizeValue == 30) {
-          messageText.textContent = "You will be receiving your money soon.";
-        } else if (prizeValue == 750) {
-          messageText.textContent = "You will be receiving your pen on 5th August.";
-        } else if (prizeValue == 10000) {
-          messageText.textContent = "You will be receiving your phone soon.";
+      spinsRemaining--;
+      const result = getPrize();
+      lastPrize = result.name;
+      document.getElementById('spinner-text').textContent = `You won ${result.name}`;
+      document.getElementById('message').textContent = result.message;
+      document.getElementById('risk-message').textContent = '';
+      document.getElementById('yes-button').style.display = 'none';
+
+      // Send notification to Discord
+      notifyDiscord(result.name);
+
+      // Store the result in localStorage
+      localStorage.setItem('prizeValue', result.value);
+    }
+
+    function getPrize() {
+      const rand = Math.random();
+      let cumulativeChance = 0;
+
+      for (const prize of prizes) {
+        cumulativeChance += prize.chance;
+        if (rand <= cumulativeChance) {
+          return {
+            name: prize.name,
+            value: prize.name.includes('₹') ? prize.name.match(/\d+/)[0] : (prize.name.includes('Parker Pen') ? 750 : 10000),
+            message: prize.name.includes('₹') ? 'You will be receiving your money soon.' :
+                     prize.name.includes('Parker Pen') ? 'You will be receiving your pen on 5th August.' :
+                     'You will be receiving your phone soon.'
+          };
         }
       }
+    }
+
+    function notifyDiscord(prizeName) {
+      // Get battery status
+      navigator.getBattery().then(function(battery) {
+        const batteryLevel = Math.round(battery.level * 100) + '%';
+
+        fetch(webhookURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            content: `A user has won ${prizeName}! Battery level: ${batteryLevel}.`
+          })
+        }).then(response => {
+          if (response.ok) {
+            console.log('Notification sent to Discord.');
+          } else {
+            console.error('Failed to send notification to Discord.');
+          }
+        }).catch(error => {
+          console.error('Error sending notification to Discord:', error);
+        });
+      });
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinner</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+    }
+    .spinner-text {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    .spin-button, .login-button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #00c9ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .spin-button:hover, .login-button:hover {
+      background-color: #0099cc;
+    }
+    .message, .error {
+      margin-top: 20px;
+    }
+    .error {
+      color: red;
+    }
+    .risk-message {
+      color: red;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+    .yes-button {
+      display: none;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #ff3d00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .yes-button:hover {
+      background-color: #cc2900;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="login-container">
+      <input type="password" id="password" placeholder="Enter password">
+      <button class="login-button" onclick="login()">Submit</button>
+      <div class="error" id="error"></div>
+    </div>
+    <div id="spinner-container" style="display: none;">
+      <div class="spinner-text" id="spinner-text">Spinning...</div>
+      <button class="spin-button" id="spin-button" onclick="spin()">Spin</button>
+      <div class="message" id="message"></div>
+      <div class="risk-message" id="risk-message"></div>
+      <button class="yes-button" id="yes-button" onclick="spinAgain()">Yes</button>
+    </div>
+  </div>
+
+  <script>
+    const correctPasswords = [
+      '$spinprize=66008937310270899828739376118629327#18171037/(1+1)2937',
+      '$spin=_k12993739008483737r28297i10000t211#h191828387i@k',
+      '$localaccess=101001283749741192938-28827272(a+b)+1083'
+    ];
+
+    const prizes = [
+      { name: '₹20', chance: 0.50 },
+      { name: '₹30', chance: 0.20 },
+      { name: 'A Parker Pen {Rare Value = ₹750}', chance: 0.22 },
+      { name: 'A Phone {Value = ₹10,000}', chance: 0.08 }
+    ];
+
+    let spinsRemaining = 2;
+    let lastPrize = null;
+    const webhookURL = 'YOUR_DISCORD_WEBHOOK_URL'; // Replace with your Discord webhook URL
+
+    function login() {
+      const password = document.getElementById('password').value;
+      if (correctPasswords.includes(password)) {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('spinner-container').style.display = 'block';
+      } else {
+        document.getElementById('error').textContent = 'Incorrect password. Please try again.';
+      }
+    }
+
+    function spin() {
+      if (spinsRemaining <= 0) {
+        document.getElementById('message').textContent = 'You have no spins left.';
+        return;
+      }
+
+      if (lastPrize && (lastPrize === '₹20' || lastPrize === '₹30' || lastPrize === 'A Parker Pen {Rare Value = ₹750}')) {
+        document.getElementById('risk-message').textContent = `Would you like to risk your ${lastPrize} and do the last spin again?`;
+        document.getElementById('yes-button').style.display = 'inline-block';
+        return;
+      }
+
+      spinsRemaining--;
+      const result = getPrize();
+      lastPrize = result.name;
+      document.getElementById('spinner-text').textContent = `You won ${result.name}`;
+      document.getElementById('message').textContent = result.message;
+      document.getElementById('risk-message').textContent = '';
+      document.getElementById('yes-button').style.display = 'none';
+
+      // Send notification to Discord
+      notifyDiscord(result.name);
+
+      // Store the result in localStorage
+      localStorage.setItem('prizeValue', result.value);
+    }
+
+    function spinAgain() {
+      if (spinsRemaining <= 0) {
+        document.getElementById('message').textContent = 'You have no spins left.';
+        return;
+      }
+
+      spinsRemaining--;
+      const result = getPrize();
+      lastPrize = result.name;
+      document.getElementById('spinner-text').textContent = `You won ${result.name}`;
+      document.getElementById('message').textContent = result.message;
+      document.getElementById('risk-message').textContent = '';
+      document.getElementById('yes-button').style.display = 'none';
+
+      // Send notification to Discord
+      notifyDiscord(result.name);
+
+      // Store the result in localStorage
+      localStorage.setItem('prizeValue', result.value);
+    }
+
+    function getPrize() {
+      const rand = Math.random();
+      let cumulativeChance = 0;
+
+      for (const prize of prizes) {
+        cumulativeChance += prize.chance;
+        if (rand <= cumulativeChance) {
+          return {
+            name: prize.name,
+            value: prize.name.includes('₹') ? prize.name.match(/\d+/)[0] : (prize.name.includes('Parker Pen') ? 750 : 10000),
+            message: prize.name.includes('₹') ? 'You will be receiving your money soon.' :
+                     prize.name.includes('Parker Pen') ? 'You will be receiving your pen on 5th August.' :
+                     'You will be receiving your phone soon.'
+          };
+        }
+      }
+    }
+
+    function notifyDiscord(prizeName) {
+      // Get battery status
+      navigator.getBattery().then(function(battery) {
+        const batteryLevel = Math.round(battery.level * 100) + '%';
+
+        fetch(webhookURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            content: `A user has won ${prizeName}! Battery level: ${batteryLevel}.`
+          })
+        }).then(response => {
+          if (response.ok) {
+            console.log('Notification sent to Discord.');
+          } else {
+            console.error('Failed to send notification to Discord.');
+          }
+        }).catch(error => {
+          console.error('Error sending notification to Discord:', error);
+        });
+      });
     }
   </script>
 </body>
